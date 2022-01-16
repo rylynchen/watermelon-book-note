@@ -3,6 +3,7 @@
 * 精度 accuracy = 1 - 错误率
 * 过拟合 overfitting (学过了)
 * 欠拟合 underfitting (未学好)
+
 # 2.2 评估方法
 * 使用 测试集 testing set
   * 真实分布采样
