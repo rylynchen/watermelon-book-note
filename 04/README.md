@@ -1,0 +1,56 @@
+# 4.1 基本流程
+* 决策／判定的过程
+* 每个判定，都是对某个属性的“测试”
+* 一颗决策树包含
+  * 一个根结点(理解：起点)
+  * 若干个内部结点(理解：枢纽点)
+  * 若干个叶结点(理解：终点)
+* 三种递归返回
+  * 当前节点的样本全属于同一类别
+  * 当前属性集为空，或所有样本在所有属性上取值相同
+  * 当前结点包含的样本集为空
+* 逻辑
+```
+训练集D={(x1,y1),(x2,y2),...(xm,ym)};
+属性集A={a1,a2,...,ad}
+过程：函数 TreeGenerate(D, A)
+生成结点node;
+if D中样本全属于同一类别C then
+    将node标记为C类叶结点;return
+end if
+
+if A=空集 OR D中样本在A上取值全相同 then
+    # 无法分,全一样
+    将node标记为叶结点,其类别标记为D中样本数最多的类;return
+end if
+从A中选择最优划分属性a;
+for a in Av do
+    为node生成一个分支;令Dv表示D中在a上取值为av的样本子集;
+    if Dv为空 then
+        将分支结点标记为叶结点,其类别标记为D中样本数最多的类;return
+    else
+        以 TreeGenerate(Dv, A \ {a})为分支结点
+    end if
+end for
+```
+# 4.2 划分选择
+* 随着划分过程，结点“纯度”越高
+* 信息熵(information entropy)
+  * 度量样本集合纯度的一种指标
+  * 样本集合D中，第k类样本所在比例为pk(k=1,2,y)，则D的信息熵是
+    * Ent(D) = - SUM(k=1,k<=y, pk * log2(pk) )
+    * Ent(D)越小，则D纯度越高
+* 信息增益(information gain)
+  * Dv / D
+  * 样本数越多的分支结点，影响越大 = 对可取值数据较少的属性有所偏好
+  * Gain(D, a) = Ent(D) - SUM(v=1, v<=V, (Dv/D) * Ent(Dv) )
+  * Gain越大的属性来划分，纯度提升越大
+  * 从A中选择最优划分属性a = Max(Gain(D,a))
+* 增益率(gain ratio)
+  * 对可取值数据较少的属性有所偏好
+  * Gain_ratio(D, a) = G(D, a) / IV(a)
+  * IV(a) = -Sum(v=1, v<=V, (Dv/D) * log2(Dv/D) ) : 属性a的固有值
+  * a的可能取值数目越大，IV(a)越大
+* 基尼指数(Gini index)
+  * Gini(D)反映从数据集D中随机抽取2个样本，其类别不一致的概率
+  * Gini(D)越小，D的纯度越高
